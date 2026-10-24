@@ -6,6 +6,7 @@
 
 #include<iostream>
 #include<vector>
+#include<unordered_map>
 using namespace std;
 
 class Solution {
@@ -23,17 +24,45 @@ public:
     }
 };
 
-int main(){
-    int n;
-    cin >> n;
-    vector<int> nums(n);
-    for(int i=0;i<n;i++){
-        cin >> nums[i];
+class Solution_hash {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> hash;
+        for (int i = 0; i < nums.size(); i++) {
+            int need = target - nums[i];
+            if (hash.find(need) != hash.end()) {
+                return {hash[need], i};
+            }
+            hash[nums[i]] = i;
+        }
+        return {};
     }
-    int target;
-    cin >> target;
-    Solution sol;
-    vector<int> res = sol.twoSum(nums,target);
-    cout << res[0] << " " << res[1] << endl;
+};
+
+void printVec(const vector<int>& v){
+    for(int x : v) cout << x << " ";
+    cout << endl;
+}
+
+int main(){
+    Solution      brute;
+    Solution_hash hs;
+
+    vector<int> a = {2,7,11,15};
+    cout << "暴力 [2,7,11,15],9 : "; printVec(brute.twoSum(a,9));   // 0 1
+    cout << "哈希 [2,7,11,15],9 : "; printVec(hs.twoSum(a,9));      // 0 1
+
+    vector<int> b = {3,2,4};
+    cout << "暴力 [3,2,4],6     : "; printVec(brute.twoSum(b,6));   // 1 2
+    cout << "哈希 [3,2,4],6     : "; printVec(hs.twoSum(b,6));      // 1 2
+
+    vector<int> c = {3,3};
+    cout << "暴力 [3,3],6       : "; printVec(brute.twoSum(c,6));   // 0 1
+    cout << "哈希 [3,3],6       : "; printVec(hs.twoSum(c,6));      // 0 1
+
+    vector<int> d = {-1,-2,-3,-4,-5};
+    cout << "暴力 [-1..-5],-8   : "; printVec(brute.twoSum(d,-8));  // 2 4
+    cout << "哈希 [-1..-5],-8   : "; printVec(hs.twoSum(d,-8));     // 2 4
+
     return 0;
 }

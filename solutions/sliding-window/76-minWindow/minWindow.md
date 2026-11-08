@@ -28,33 +28,44 @@
 
 ```cpp
 string minWindow(string s, string t) {
-    vector<int> need(128, 0), window(128, 0);
-    for (char c : t) need[c]++;
-
+    vector<int> need(128);
+    vector<int> window(128);
+    for(char c : t){
+        need[c]++;
+    }
     int countType = 0;
-    for (int i = 0; i < 128; i++)
-        if (need[i] > 0) countType++;
-
-    int left = 0, valid = 0, start = 0, minLen = INT_MAX;
-    int n = (int)s.size();
-    for (int right = 0; right < n; right++) {
-        char c = s[right];
-        if (need[c] > 0) {
-            window[c]++;
-            if (window[c] == need[c]) valid++;
+    for(int i = 0; i < 128; i++){
+        if(need[i] > 0){
+            countType++;
         }
-
-        while (valid == countType) {          // 全部凑够 → 试着缩
-            if (right - left + 1 < minLen) {
-                minLen = right - left + 1;
+    }
+    int left = 0;
+    int right = 0;
+    int valid = 0;
+    int start = 0;
+    int minLen = INT_MAX;
+    while(right < s.size()){
+        char c = s[right];
+        right++;
+        if(need[c] > 0){
+            window[c]++;
+            if(window[c] == need[c]){
+                valid++;
+            }
+        }
+        while(valid == countType){
+            if(right - left < minLen){
+                minLen = right - left;
                 start = left;
             }
             char d = s[left];
-            if (need[d] > 0) {
-                if (window[d] == need[d]) valid--;
+            left++;
+            if(need[d] > 0){
+                if(window[d] == need[d]){
+                    valid--;
+                }
                 window[d]--;
             }
-            left++;
         }
     }
     return minLen == INT_MAX ? "" : s.substr(start, minLen);
